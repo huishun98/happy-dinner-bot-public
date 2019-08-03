@@ -38,7 +38,6 @@ var botResponse = (msg, bot) => {
         .then(([controller, user, message, chatId]) => {
             controller.inGroup(chatId)
                 .then((inGroup) => {
-                    console.log(inGroup)
                     if (inGroup && message.substring(0, 1) == '/') {
                         // in group and a command
                         var command = getCommand(message)
