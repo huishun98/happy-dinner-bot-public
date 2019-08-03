@@ -1,4 +1,4 @@
 const limit = 5
-const query = ["cats", "dance", "benedictcumberbatch"]
+const query = ["animal", "disney"]
 
 module.exports = {limit, query}

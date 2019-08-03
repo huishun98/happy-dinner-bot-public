@@ -1,5 +1,4 @@
 const express = require('express');
-const Promise = require('bluebird');
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
 
@@ -17,10 +16,6 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Our app is running on port ${port}.`);
 })
-
-Promise.config({
-    cancellation: true
-});
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, { polling: true });
