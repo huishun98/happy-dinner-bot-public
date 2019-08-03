@@ -1,8 +1,9 @@
 const express = require('express');
-const http = require('http');
-const config = require('./config')
-
+const Promise = require('bluebird');
 const TelegramBot = require('node-telegram-bot-api');
+const http = require('http');
+
+const config = require('./config')
 const botResponse = require("./telegram/bot")
 
 var app = express();
@@ -14,8 +15,12 @@ app.get("/", (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Our app is running on port ${ port }.`);
+    console.log(`Our app is running on port ${port}.`);
 })
+
+Promise.config({
+    cancellation: true
+});
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, { polling: true });
@@ -24,6 +29,6 @@ bot.on('message', (msg) => {
 });
 
 //keep heroku awake
-setInterval(function() {
+setInterval(function () {
     http.get(config.appUrl);
 }, 300000); // every 5 minutes (300000)
