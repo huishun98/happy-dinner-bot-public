@@ -124,7 +124,7 @@ var botResponse = (msg, bot) => {
                                     var obj = JSON.parse(res)
                                     if (obj.data.length !== 0) {
                                         var index = getRandomInt(0, limit - 1)
-                                        var link = obj.data[index].images.fixed_height_still.url
+                                        var link = obj.data[index].images.original.url
                                         bot.sendDocument(chatId, link);
                                     }
                                     controller.saveReply(message, chatId, user).then((res) => {
