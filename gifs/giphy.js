@@ -10,7 +10,7 @@ const array_queries = options.query
 var getGif = () => {
     return new Promise((resolve, reject) => {
         const len_queries = array_queries.length
-        const query = getRandomInt(0, len_queries - 1)
+        const query = array_queries[getRandomInt(0, len_queries - 1)]
 
         const url = `http://api.giphy.com/v1/gifs/search?q=${query}&api_key=${api_key}&limit=${limit}`
         var xmlHttp = new XMLHttpRequest();
