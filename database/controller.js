@@ -188,6 +188,16 @@ var retrieveGroupData = (groupId) => {
     })
 }
 
+var retrieveAllGroups = () => {
+    return new Promise((resolve, reject) => {
+        groups.find({}).then((res) => {
+            resolve(res);
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 var todaysReplies = (groupId) => {
     return new Promise((resolve, reject) => {
         groups.findById(groupId).then((groupData) => {
@@ -259,5 +269,6 @@ module.exports = {
     todaysReplies,
     fetchChatIdsOfThoseInGroups,
     getUserData,
-    quitGroup
+    quitGroup,
+    retrieveAllGroups
 }

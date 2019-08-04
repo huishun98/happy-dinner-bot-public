@@ -8,10 +8,28 @@ const CronJob = require('cron').CronJob;
 // everyday at 9am, question will be asked
 var startCronJob = (bot) => {
     new CronJob('0 0 9 * * *', function () {
-        console.log('You will see this message every second');
         controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
             for (i = 0; i < arrayOfChatIds.length; i++) {
                 bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+    }, null, true, 'Asia/Singapore');
+
+    new CronJob('* * 12,2,4 * * *', function () {
+        controller.retrieveAllGroups().then((groups) => {
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i]
+                var groupMembers = group.members
+                var todaysReplies = group.data.filter((data) => data.date = date())[0].replies
+                for (var j = 0; j < groupMembers.length; j++) {
+                    var memberChatId = groupMembers[i].chatId
+                    var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
+                    if (findChatId.length == 0) {
+                        sendResponses(bot, memberChatId)
+                    }
+                }
             }
         }).catch(err => {
             console.log(err)
@@ -87,7 +105,7 @@ var botResponse = (msg, bot) => {
                                 })
                                 break;
                             case '/responses':
-                                getResponses(bot, chatId);
+                                sendResponses(bot, chatId);
                                 break;
                             case '/quit':
                                 controller.quitGroup(chatId);
@@ -151,7 +169,7 @@ var botResponse = (msg, bot) => {
                                         var groupId = message.text
                                         controller.groupExists(groupId)
                                             .then(() => {
-                                                getResponses(bot, chatId);
+                                                sendResponses(bot, chatId);
                                                 controller.addUserGroup(user, chatId, groupId);
                                                 controller.addGroupMember(user, chatId, groupId);
                                             }).catch(err => {
@@ -190,7 +208,7 @@ var getCommand = (message) => {
     }
 }
 
-var getResponses = (bot, chatId) => {
+var sendResponses = (bot, chatId) => {
     controller.findGroup(chatId).then((groupId) => {
         controller.todaysReplies(groupId).then((repliesArray) => {
             var botResponse = [];
