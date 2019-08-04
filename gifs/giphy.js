@@ -1,6 +1,6 @@
-const config = require("../config")
-const options = require("../options")
-const getRandomInt = require('../common/random-int')
+const config = require("../common/config")
+const options = require("../common/options")
+const getRandomInt = require('../database/random-int')
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const api_key = config.giphyApiKey

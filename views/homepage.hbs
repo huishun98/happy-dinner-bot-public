@@ -1,0 +1,21 @@
+<div class="page container-fluid">
+    <div class="section">
+        <h1>{{title}}</h1>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>{{{description}}}</p>
+    </div>
+
+    <div class="section">
+        <h2>Options</h2>
+        {{#each options}}
+        <div class="option-wrapper">
+            <h3 class="obj-key">{{@key}}</h3>
+            <p>{{{this}}}</p>
+        </div>
+        {{/each}}
+    </div>
+
+</div>

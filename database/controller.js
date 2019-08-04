@@ -1,6 +1,6 @@
 const { ObjectID } = require('mongodb');
 
-const { date, time } = require('../common/date');
+const { date, time } = require('./date');
 
 const { connect } = require('./connect-mongo')
 const { groups, users } = require('./models')

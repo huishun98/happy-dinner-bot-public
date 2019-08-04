@@ -1,4 +1,4 @@
-const { localMongo } = require('../config');
+const { localMongo } = require('../common/config');
 const mongoose = require('mongoose');
 
 var connect = () => {

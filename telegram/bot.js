@@ -1,8 +1,8 @@
 const { ObjectID } = require('mongodb');
 const controller = require('../database/controller');
-const customReplies = require("../messages")
+const options = require("../common/options")
 const getGif = require("../gifs/giphy")
-const getRandomInt = require('../common/random-int')
+const getRandomInt = require('../database/random-int')
 const CronJob = require('cron').CronJob;
 
 // everyday at 9am, question will be asked
@@ -10,7 +10,7 @@ var startCronJob = (bot) => {
     new CronJob('0 0 9 * * *', function () {
         controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
             for (i = 0; i < arrayOfChatIds.length; i++) {
-                bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
+                bot.sendMessage(arrayOfChatIds[i], options.question, { parse_mode: "HTML" })
             }
         }).catch(err => {
             console.log(err)
@@ -37,7 +37,6 @@ var startCronJob = (bot) => {
     }, null, true, 'Asia/Singapore');
 }
 
-
 var botResponse = (msg, bot) => {
     //variables
     var user = msg.from.first_name;
@@ -52,7 +51,7 @@ var botResponse = (msg, bot) => {
                 return [controller, user, message, chatId]
             } else {
                 controller.addUser(user, chatId).then((res) => {
-                    bot.sendMessage(chatId, customReplies.startMessage, { parse_mode: "HTML" });
+                    bot.sendMessage(chatId, options.startMessage, { parse_mode: "HTML" });
                 })
                 throw new Error("New user")
             }
@@ -66,21 +65,21 @@ var botResponse = (msg, bot) => {
 
                         switch (command) {
                             case '/start':
-                                bot.sendMessage(chatId, customReplies.success + customReplies.question, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.success + options.question, { parse_mode: "HTML" });
                                 break;
                             case '/help':
-                                bot.sendMessage(chatId, customReplies.help, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.help, { parse_mode: "HTML" });
                                 break;
                             case '/create':
-                                bot.sendMessage(chatId, customReplies.errMultipleGrps, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.errMultipleGrps, { parse_mode: "HTML" });
                                 break;
                             case '/join':
-                                bot.sendMessage(chatId, customReplies.errMultipleGrps, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.errMultipleGrps, { parse_mode: "HTML" });
                                 break;
                             case '/group':
                                 controller.findGroup(chatId).then((groupId) => {
                                     controller.retrieveGroupData(groupId).then((groupData) => {
-                                        bot.sendMessage(chatId, customReplies.checkGrpId, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, options.checkGrpId, { parse_mode: "HTML" });
                                         bot.sendMessage(chatId, `${groupData._id}`);
                                     }).catch(err => {
                                         console.log(err)
@@ -107,10 +106,10 @@ var botResponse = (msg, bot) => {
                                 break;
                             case '/quit':
                                 controller.quitGroup(chatId);
-                                bot.sendMessage(chatId, customReplies.quit);
+                                bot.sendMessage(chatId, options.quit);
                                 break;
                             default:
-                                bot.sendMessage(chatId, customReplies.promptCmd, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.promptCmd, { parse_mode: "HTML" });
                         }
                     }
                     else if (inGroup && !(message.substring(0, 1) == '/')) {
@@ -126,7 +125,7 @@ var botResponse = (msg, bot) => {
                                         bot.sendDocument(chatId, link);
                                     }
                                     controller.saveReply(message, chatId, user).then((res) => {
-                                        bot.sendMessage(chatId, customReplies.question + '\n' + res, { parse_mode: "HTML" })
+                                        bot.sendMessage(chatId, options.question + '\n' + res, { parse_mode: "HTML" })
                                     }).catch(err => {
                                         console.log(err)
                                     });
@@ -135,7 +134,7 @@ var botResponse = (msg, bot) => {
                                 })
                                 break;
                             default:
-                                bot.sendMessage(chatId, customReplies.standardReply, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.standardReply, { parse_mode: "HTML" });
                         }
                     } else if (!(inGroup) && message.substring(0, 1) == '/') {
                         // not in group and a command
@@ -143,26 +142,26 @@ var botResponse = (msg, bot) => {
                         var command = getCommand(message)
                         switch (command) {
                             case '/help':
-                                bot.sendMessage(chatId, customReplies.help, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.help, { parse_mode: "HTML" });
                                 break;
                             case '/create':
                                 var groupId = new ObjectID();
                                 controller.addUserGroup(user, chatId, groupId)
                                     .then((groupId) => {
-                                        bot.sendMessage(chatId, customReplies.success + customReplies.createdGrp, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, options.success + options.createdGrp, { parse_mode: "HTML" });
                                         bot.sendMessage(chatId, `${groupId}`);
-                                        bot.sendMessage(chatId, customReplies.question, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, options.question, { parse_mode: "HTML" });
                                     }
                                     ).catch(err => {
                                         if (err == 'has a group') {
-                                            bot.sendMessage(chatId, customReplies.errMultipleGrps, { parse_mode: "HTML" });
+                                            bot.sendMessage(chatId, options.errMultipleGrps, { parse_mode: "HTML" });
                                         } else {
                                             console.log(err)
                                         }
                                     })
                                 break;
                             case '/join':
-                                bot.sendMessage(chatId, customReplies.join).then((sended) => {
+                                bot.sendMessage(chatId, options.join).then((sended) => {
                                     bot.onReplyToMessage(sended.chat.id, sended.message_id, (message) => {
                                         var groupId = message.text
                                         controller.groupExists(groupId)
@@ -171,7 +170,7 @@ var botResponse = (msg, bot) => {
                                                 controller.addUserGroup(user, chatId, groupId);
                                                 controller.addGroupMember(user, chatId, groupId);
                                             }).catch(err => {
-                                                bot.sendMessage(chatId, customReplies.invalidGrpId, { parse_mode: "HTML" });
+                                                bot.sendMessage(chatId, options.invalidGrpId, { parse_mode: "HTML" });
                                                 if (err !== "Invalid Group Id") {
                                                     console.log(err)
                                                 }
@@ -183,14 +182,14 @@ var botResponse = (msg, bot) => {
                             case '/group':
                             case '/members':
                             case '/quit':
-                                bot.sendMessage(chatId, customReplies.promptGrp, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.promptGrp, { parse_mode: "HTML" });
                                 break;
                             default:
-                                bot.sendMessage(chatId, customReplies.promptCmd, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.promptCmd, { parse_mode: "HTML" });
                         }
                     } else if (!(inGroup) && !(message.substring(0, 1) == '/')) {
                         // not in group and a message
-                        bot.sendMessage(chatId, customReplies.startMessage, { parse_mode: "HTML" });
+                        bot.sendMessage(chatId, options.startMessage, { parse_mode: "HTML" });
                     }
                 })
         }).catch(err => {
@@ -215,9 +214,9 @@ var sendResponses = (bot, chatId) => {
             }
             if (botResponse.length !== 0) {
                 botResponse = botResponse.join('\n');
-                bot.sendMessage(chatId, customReplies.question + `\n${botResponse}`, { parse_mode: "HTML" });
+                bot.sendMessage(chatId, options.question + `\n${botResponse}`, { parse_mode: "HTML" });
             } else {
-                bot.sendMessage(chatId, customReplies.noReplies, { parse_mode: "HTML" });
+                bot.sendMessage(chatId, options.noReplies, { parse_mode: "HTML" });
             }
         }).catch(err => {
             console.log(err)

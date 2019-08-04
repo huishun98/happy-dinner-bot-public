@@ -2,20 +2,26 @@ const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
 const hbs = require('express-handlebars')
+const path = require('path')
 
-const config = require('./config')
+const config = require('./common/config')
 const runBot = require("./telegram/bot")
+const options = require("./common/options")
+const info = require("./common/info")
 
 var app = express();
 const router = express.Router();
 
-app.engine('.hbs', hbs({extname: '.hbs', layoutsDir:__dirname + '/views'}))
-app.set('views', __dirname + '/views')
-app.set('view engine', '.hbs')
+app.engine('hbs', hbs({ extname: '.hbs', layoutsDir: path.join(__dirname + '/views') }))
+app.set('view engine', 'hbs')
+app.use(express.static(path.join(__dirname, '/public')))
 
-router.get('/',function(req,res){
-    res.render('index', {
-        title: "Happy Dinner Bot"
+
+router.get('/', function (req, res) {
+    res.render('homepage', {
+        title: info.title,
+        description: info.description,
+        options: options
     })
 });
 app.use('/', router);
