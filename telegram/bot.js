@@ -6,16 +6,18 @@ const getRandomInt = require('../common/random-int')
 const CronJob = require('cron').CronJob;
 
 // everyday at 9am, question will be asked
-new CronJob('0 5 13 * * *', function () {
-    console.log('You will see this message every second');
-    controller.fetchChatIds().then((arrayOfChatIds) => {
-        for (i = 0; i < arrayOfChatIds.length; i++) {
-            bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
-        }
-    }).catch(err => {
-        console.log(err)
-    });
-}, null, true, 'Asia/Singapore');
+var startCronJob = (bot) => {
+    new CronJob('0 20 13 * * *', function () {
+        console.log('You will see this message every second');
+        controller.fetchChatIds().then((arrayOfChatIds) => {
+            for (i = 0; i < arrayOfChatIds.length; i++) {
+                bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+    }, null, true, 'Asia/Singapore');
+}
 
 
 var botResponse = (msg, bot) => {
@@ -204,4 +206,4 @@ var getParam = (message) => {
     }
 }
 
-module.exports = botResponse
+module.exports = { botResponse, startCronJob }

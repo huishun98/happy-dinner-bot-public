@@ -3,7 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
 
 const config = require('./config')
-const botResponse = require("./telegram/bot")
+const runBot = require("./telegram/bot")
 
 var app = express();
 
@@ -19,8 +19,9 @@ app.listen(port, () => {
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, { polling: true });
+runBot.startCronJob(bot)
 bot.on('message', (msg) => {
-    botResponse(msg, bot)
+    runBot.botResponse(msg, bot)
 });
 
 
