@@ -91,7 +91,7 @@ var botResponse = (msg, bot) => {
                                 break;
                             case '/members':
                                 controller.findGroup(chatId).then((groupId) => {
-                                    controller.retrieveGroupData(groupId, (groupData) => {
+                                    controller.retrieveGroupData(groupId).then((groupData) => {
                                         var arrayOfMemberObjects = groupData.members;
                                         var arrayOfMembers = [];
                                         for (i = 0; i < arrayOfMemberObjects.length; i++) {
@@ -99,10 +99,8 @@ var botResponse = (msg, bot) => {
                                         }
                                         arrayOfMembers = arrayOfMembers.join('\n')
                                         bot.sendMessage(chatId, `Group members:\n${arrayOfMembers}`, { parse_mode: "HTML" });
-                                    })
-                                }).catch(err => {
-                                    console.log(err)
-                                })
+                                    }).catch(err => {console.log(err)})
+                                }).catch(err => {console.log(err)})
                                 break;
                             case '/responses':
                                 sendResponses(bot, chatId);
