@@ -174,8 +174,8 @@ var saveReply = (reply, chatId, user) => {
                         for (i = 0; i < todaysReplies.length; i++) {
                             response.push(`${todaysReplies[i].user}: ${todaysReplies[i].reply}`);
                         };
-                        todaysReplies = todaysReplies.join('\n');
-                        resolve(todaysReplies);
+                        response = response.join('\n');
+                        resolve(response);
                     })
                 }
             })
