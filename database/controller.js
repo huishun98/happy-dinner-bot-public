@@ -133,7 +133,6 @@ var saveReply = (reply, chatId, user) => {
         findGroup(chatId).then((groupId) => {
             groups.findById(groupId).then((res) => {
                 const findTodayArray = res.data.filter((replyObject) => replyObject.date == date());
-                console.log(date(), time())
                 const entry = {
                     user,
                     chatId,
@@ -171,9 +170,9 @@ var saveReply = (reply, chatId, user) => {
                         { new: true },
                     ).then((updatedGroup) => {
                         var todaysReplies = updatedGroup.data.filter((data) => data.date == date())[0]
+                        var response = []
                         for (i = 0; i < todaysReplies.length; i++) {
-                            var toPush = `${todaysReplies[i].user}: ${todaysReplies[i].reply}`;
-                            todaysReplies.push(toPush);
+                            response.push(`${todaysReplies[i].user}: ${todaysReplies[i].reply}`);
                         };
                         todaysReplies = todaysReplies.join('\n');
                         resolve(todaysReplies);
