@@ -64,7 +64,7 @@ var botResponse = (msg, bot) => {
                                 controller.findGroup(chatId).then((groupId) => {
                                     controller.retrieveGroupData(groupId).then((groupData) => {
                                         bot.sendMessage(chatId, customReplies.checkGrpId, { parse_mode: "HTML" });
-                                        bot.sendMessage(chatId, groupData._id);
+                                        bot.sendMessage(chatId, `${groupData._id}`);
                                     }).catch(err => {
                                         console.log(err)
                                     })
@@ -151,7 +151,7 @@ var botResponse = (msg, bot) => {
                                 controller.addUserGroup(user, chatId, groupId)
                                     .then((groupId) => {
                                         bot.sendMessage(chatId, customReplies.success + customReplies.createdGrp, { parse_mode: "HTML" });
-                                        bot.sendMessage(chatId, groupId);
+                                        bot.sendMessage(chatId, `${groupId}`);
                                         bot.sendMessage(chatId, customReplies.question, { parse_mode: "HTML" });
                                     }
                                     ).catch(err => {
