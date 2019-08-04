@@ -2,7 +2,7 @@ const startMessage = `<b>Welcome to Happy Dinner Bot.</b>\nIf you would like to 
 const question = '<b>Dinner tonight?</b>';
 const standardReply = question + '\n**Please reply with either Yes or No';
 const success = 'Welcome to Happy Dinner Bot!\n'
-const help = "List of commands:\n/responses - check who is having dinner tonight\n/group - check group ID \n/members - list group members \n/create - create a group \n/join - join a group (e.g. /join 1234) \n/changegroup - change to another group (e.g. /changegroup 1234) \n/changeid - change group ID"
+const help = "List of commands:\n/responses - check who is having dinner tonight\n/group - check group ID \n/members - list group members \n/create - create a group \n/join - join a group (e.g. /join 1234)"
 const errMultipleGrps = `You already have a dinner group.\nYou can't create/join another one.`
 const checkGrpId = (grpId) => {
     return `Your group ID is ${grpId}.`

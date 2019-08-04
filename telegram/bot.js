@@ -178,8 +178,6 @@ var botResponse = (msg, bot) => {
                                 break;
                             case '/responses':
                             case '/group':
-                            case '/changegroup':
-                            case '/changeid':
                             case '/members':
                                 bot.sendMessage(chatId, customReplies.promptGrp, { parse_mode: "HTML" });
                                 break;

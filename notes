@@ -5,8 +5,7 @@ help - list other commands
 
 create - create a group
 join - join a group (e.g. /join 1234)
-changegroup - change to another group (e.g. /changegroup 1234)
-changeid - change group ID
+quit - quit group
 
 NOTE THAT addToday IS RUN EVERYTIME CODE IS PUSHED TO HEROKU.
 
