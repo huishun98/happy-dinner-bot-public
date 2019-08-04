@@ -9,17 +9,15 @@ const runBot = require("./telegram/bot")
 var app = express();
 const router = express.Router();
 
-router.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/client/index.html'));
-    //__dirname : It will resolve to your project folder.
+app.engine('handlebars', hbs({extname: 'hbs', layoutsDir:__dirname + '/views'}))
+app.set('view engine', 'hbs')
+
+router.get('/',function(req,res){
+    res.render('index', {
+        title: "Happy Dinner Bot"
+    })
 });
-
-//add the router
 app.use('/', router);
-
-app.get("/", (req, res) => {
-    res.sendFile('index.html');
-})
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
