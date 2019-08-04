@@ -102,6 +102,7 @@ var botResponse = (msg, bot) => {
                             case '/quit':
                                 controller.quitGroup(chatId);
                                 bot.sendMessage(chatId, customReplies.quit);
+                                break;
                             default:
                                 bot.sendMessage(chatId, customReplies.promptCmd, { parse_mode: "HTML" });
                         }
@@ -170,6 +171,7 @@ var botResponse = (msg, bot) => {
                             case '/responses':
                             case '/group':
                             case '/members':
+                            case '/quit':
                                 bot.sendMessage(chatId, customReplies.promptGrp, { parse_mode: "HTML" });
                                 break;
                             default:
