@@ -87,21 +87,7 @@ var botResponse = (msg, bot) => {
                                 })
                                 break;
                             case '/responses':
-                                controller.findGroup(chatId).then((groupId) => {
-                                    //find the one that has todays data
-                                    controller.todaysReplies(groupId).then((repliesArray) => {
-                                        var botResponse = [];
-                                        for (i = 0; i < repliesArray.length; i++) {
-                                            botResponse.push(`${repliesArray[i].user}: ${repliesArray[i].reply}`);
-                                        }
-                                        botResponse = botResponse.join('\n');
-                                        bot.sendMessage(chatId, customReplies.question + `\n${botResponse}`, { parse_mode: "HTML" });
-                                    }).catch(err => {
-                                        console.log(err)
-                                    })
-                                }).catch(err => {
-                                    console.log(err)
-                                })
+                                getResponses(bot, chatId);
                                 break;
                             case '/quit':
                                 controller.quitGroup(chatId);
@@ -165,7 +151,7 @@ var botResponse = (msg, bot) => {
                                         var groupId = message.text
                                         controller.groupExists(groupId)
                                             .then(() => {
-                                                bot.sendMessage(chatId, customReplies.success + customReplies.question, { parse_mode: "HTML" });
+                                                getResponses(bot, chatId);
                                                 controller.addUserGroup(user, chatId, groupId);
                                                 controller.addGroupMember(user, chatId, groupId);
                                             }).catch(err => {
@@ -188,7 +174,7 @@ var botResponse = (msg, bot) => {
                         }
                     } else if (!(inGroup) && !(message.substring(0, 1) == '/')) {
                         // not in group and a message
-                        bot.sendMessage(chatId, customReplies.promptGrp, { parse_mode: "HTML" });
+                        bot.sendMessage(chatId, customReplies.startMessage, { parse_mode: "HTML" });
                     }
                 })
         }).catch(err => {
@@ -202,6 +188,27 @@ var getCommand = (message) => {
     } else {
         return message;
     }
+}
+
+var getResponses = (bot, chatId) => {
+    controller.findGroup(chatId).then((groupId) => {
+        controller.todaysReplies(groupId).then((repliesArray) => {
+            var botResponse = [];
+            for (i = 0; i < repliesArray.length; i++) {
+                botResponse.push(`${repliesArray[i].user}: ${repliesArray[i].reply}`);
+            }
+            if (botResponse.length !== 0) {
+                botResponse = botResponse.join('\n');
+                bot.sendMessage(chatId, customReplies.question + `\n${botResponse}`, { parse_mode: "HTML" });
+            } else {
+                bot.sendMessage(chatId, customReplies.noReplies, { parse_mode: "HTML" });
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }).catch(err => {
+        console.log(err)
+    })
 }
 
 module.exports = { botResponse, startCronJob }
