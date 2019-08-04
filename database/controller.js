@@ -236,7 +236,6 @@ var quitGroup = (chatId) => {
 var fetchChatIds = () => {
     return new Promise((resolve, reject) => {
         users.find().then((allUsers) => {
-            // console.log(`all users are ${allUsers}.`);
             var chatIdArray = [];
             for (i = 0; i < allUsers.length; i++) {
                 chatIdArray.push(allUsers[i].chatId);
@@ -244,7 +243,6 @@ var fetchChatIds = () => {
             resolve(chatIdArray);
         })
     })
-
 }
 
 module.exports = {

@@ -1,12 +1,13 @@
 const { ObjectID } = require('mongodb');
-const schedule = require('node-schedule');
 const controller = require('../database/controller');
 const customReplies = require("../messages")
 const getGif = require("../gifs/giphy")
 const getRandomInt = require('../common/random-int')
+const CronJob = require('cron').CronJob;
 
-//everyday at 9am, question will be asked
-var askQuestion = schedule.scheduleJob('0 0 1 * * *', function () {
+// everyday at 9am, question will be asked
+new CronJob('0 5 13 * * *', function () {
+    console.log('You will see this message every second');
     controller.fetchChatIds().then((arrayOfChatIds) => {
         for (i = 0; i < arrayOfChatIds.length; i++) {
             bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
@@ -14,7 +15,8 @@ var askQuestion = schedule.scheduleJob('0 0 1 * * *', function () {
     }).catch(err => {
         console.log(err)
     });
-});
+}, null, true, 'Asia/Singapore');
+
 
 var botResponse = (msg, bot) => {
     //variables
