@@ -13,7 +13,7 @@ var parse = (number) => {
 }
 
 var date = () => {
-    initialiseToday()
+    var today = initialiseToday()
     var dd = parse(today.getDate());
     var mm = parse(today.getMonth() + 1); //January is 0!
     var yyyy = today.getFullYear();
@@ -21,7 +21,7 @@ var date = () => {
 }
 
 var time = () => {
-    initialiseToday()
+    var today = initialiseToday()
     return `${parse(today.getHours())}:${parse(today.getMinutes())}`
 }
 
