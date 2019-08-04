@@ -233,12 +233,13 @@ var quitGroup = (chatId) => {
     });
 }
 
-var fetchChatIds = () => {
+var fetchChatIdsOfThoseInGroups = () => {
     return new Promise((resolve, reject) => {
         users.find().then((allUsers) => {
+            var usersInGroups = allUsers.filter((user) => user.group !== null)
             var chatIdArray = [];
-            for (i = 0; i < allUsers.length; i++) {
-                chatIdArray.push(allUsers[i].chatId);
+            for (i = 0; i < usersInGroups.length; i++) {
+                chatIdArray.push(usersInGroups[i].chatId);
             }
             resolve(chatIdArray);
         })
@@ -256,10 +257,7 @@ module.exports = {
     findGroup,
     retrieveGroupData,
     todaysReplies,
-    // changeUserGroup,
-    // changeGroupId,
-    fetchChatIds,
-    // createNewToday,
+    fetchChatIdsOfThoseInGroups,
     getUserData,
     quitGroup
 }

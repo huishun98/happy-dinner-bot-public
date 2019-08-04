@@ -14,9 +14,6 @@ const invalidGrpId = `Invalid group ID.\nPlease enter '/join' followed by a vali
 const promptGrp = `Please create a group or join a group!`
 const promptCmd = `Please enter a valid command.`
 const changedGrp = `Your group has been changed.`
-const newGrpId = (newGroupId) => {
-    return `Your new group ID is ${newGroupId}.`
-}
 const quit = "You have quitted your dinner group"
 
 module.exports = {
@@ -32,6 +29,5 @@ module.exports = {
     promptGrp,
     promptCmd,
     changedGrp,
-    newGrpId,
     quit
 }

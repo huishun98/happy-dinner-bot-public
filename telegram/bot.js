@@ -7,9 +7,9 @@ const CronJob = require('cron').CronJob;
 
 // everyday at 9am, question will be asked
 var startCronJob = (bot) => {
-    new CronJob('0 20 13 * * *', function () {
+    new CronJob('0 0 9 * * *', function () {
         console.log('You will see this message every second');
-        controller.fetchChatIds().then((arrayOfChatIds) => {
+        controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
             for (i = 0; i < arrayOfChatIds.length; i++) {
                 bot.sendMessage(arrayOfChatIds[i], customReplies.question, { parse_mode: "HTML" })
             }
@@ -63,7 +63,8 @@ var botResponse = (msg, bot) => {
                             case '/group':
                                 controller.findGroup(chatId).then((groupId) => {
                                     controller.retrieveGroupData(groupId).then((groupData) => {
-                                        bot.sendMessage(chatId, customReplies.checkGrpId(groupData._id), { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, customReplies.checkGrpId, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, groupData._id);
                                     }).catch(err => {
                                         console.log(err)
                                     })
@@ -149,7 +150,9 @@ var botResponse = (msg, bot) => {
                                 var groupId = new ObjectID();
                                 controller.addUserGroup(user, chatId, groupId)
                                     .then((groupId) => {
-                                        bot.sendMessage(chatId, customReplies.success + customReplies.createdGrp(groupId) + customReplies.question, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, customReplies.success + customReplies.createdGrp, { parse_mode: "HTML" });
+                                        bot.sendMessage(chatId, groupId);
+                                        bot.sendMessage(chatId, customReplies.question, { parse_mode: "HTML" });
                                     }
                                     ).catch(err => {
                                         if (err == 'has a group') {
