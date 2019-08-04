@@ -1,7 +1,7 @@
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
-var path = require('path');
+const hbs = require('express-handlebars')
 
 const config = require('./config')
 const runBot = require("./telegram/bot")
