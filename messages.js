@@ -17,6 +17,7 @@ const changedGrp = `Your group has been changed.`
 const newGrpId = (newGroupId) => {
     return `Your new group ID is ${newGroupId}.`
 }
+const quit = "You have quitted your dinner group"
 
 module.exports = {
     startMessage,
@@ -31,5 +32,6 @@ module.exports = {
     promptGrp,
     promptCmd,
     changedGrp,
-    newGrpId
+    newGrpId,
+    quit
 }

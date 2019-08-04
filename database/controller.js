@@ -90,7 +90,7 @@ var groupExists = (groupId) => {
                         resolve()
                     }
                 }
-                reject("invalid group Id")
+                reject("Invalid Group Id")
             })
             .catch(err => {
                 reject(err);
@@ -104,18 +104,11 @@ var addGroupMember = (username, chatId, group) => {
         { _id: new ObjectID(group) },
         {
             $push: {
-                members: {
-                    username,
-                    chatId
-                }
+                members: { username, chatId }
             }
         },
         { new: true },
-    ).catch(
-        err => {
-            console.log(err)
-        }
-    )
+    ).catch(err => { console.log(err) })
 }
 
 var findGroup = (chatId) => {
@@ -170,7 +163,6 @@ var saveReply = (reply, chatId, user) => {
                         { new: true },
                     ).then((updatedGroup) => {
                         var todaysReplies = updatedGroup.data.filter((data) => data.date == date())[0].replies
-                        console.log(todaysReplies)
                         var response = []
                         for (i = 0; i < todaysReplies.length; i++) {
                             response.push(`${todaysReplies[i].user}: ${todaysReplies[i].reply}`);
@@ -213,36 +205,33 @@ var todaysReplies = (groupId) => {
     })
 }
 
-// var changeGroupId = (chatId) => {
-//     return new Promise((resolve, reject) => {
-//         findGroup(chatId).then((oldGroupId) => {
-//             var newGroupId = new ObjectID();
-//             groups.findById(oldGroupId).then((groupObject) => {
-//                 var group = new groups({
-//                     _id: newGroupId,
-//                     members: groupObject.members,
-//                     data: groupObject.data
-//                 });
-//                 group.save(() => {
-//                     groups.deleteOne({ _id: new ObjectID(oldGroupId) }).then(() => {
-//                         users.updateMany(
-//                             { group: oldGroupId },
-//                             {
-//                                 $set: {
-//                                     group: newGroupId
-//                                 }
-//                             },
-//                         ).then(() => {
-//                         });
-//                     });
-//                 })
-//                 resolve(newGroupId);
-//             });
-//         }).catch(err => {
-//             reject(err)
-//         })
-//     })
-// }
+var quitGroup = (chatId) => {
+    users.findOne({ chatId }).then((res) => {
+        var groupId = res.group
+        users
+            .findOneAndUpdate(
+                { chatId },
+                { $set: { group: null } },
+                { new: true }
+            )
+            .catch(err => console.log(err))
+
+        groups.findById(groupId).then((groupObject) => {
+            var groupMembers = groupObject.members
+            groupMembers = groupMembers.filter((member) => member.chatId !== chatId)
+
+            groups.findOneAndUpdate(
+                { _id: new ObjectID(groupId) },
+                {
+                    $set: {
+                        members: groupMembers
+                    }
+                },
+                { new: true },
+            ).catch(err => { console.log(err) })
+        })
+    });
+}
 
 var fetchChatIds = () => {
     return new Promise((resolve, reject) => {
@@ -273,5 +262,6 @@ module.exports = {
     // changeGroupId,
     fetchChatIds,
     // createNewToday,
-    getUserData
+    getUserData,
+    quitGroup
 }
