@@ -46,7 +46,6 @@ var getUserData = (chatId) => {
 var addUserGroup = (username, chatId, groupId) => {
     return new Promise((resolve, reject) => {
         users.findOne({ chatId }).then((res) => {
-            console.log(res.group === null, res.group === null)
             if (res.group === null) {
                 users
                     .findOneAndUpdate(
@@ -68,52 +67,6 @@ var addUserGroup = (username, chatId, groupId) => {
     })
 }
 
-var changeUserGroup = (chatId, newGroupId) => {
-    return new Promise((resolve, reject) => {
-
-        groupExists(newGroupId)
-        .then(() => {
-            findGroup(chatId).then((oldGroup) => {
-                groups
-                    .findById(oldGroup)
-                    .then((oldGroupData) => {
-                        var oldGroupMembersArray = oldGroupData.members;
-                        for (i = 0; i < oldGroupMembersArray.length; i++) {
-                            if (oldGroupMembersArray[i].chatId == chatId) {
-                                oldGroupMembersArray.splice(i, 1);
-                            }
-                        }
-                        groups
-                            .findOneAndUpdate(
-                                { _id: new ObjectID(oldGroup) },
-                                { $set: { members: oldGroupMembersArray, } },
-                                { new: true },
-                            )
-                            .then(() => {
-                                users.findOneAndUpdate(
-                                    { chatId },
-                                    { $set: { group: newGroupId } }
-                                ).then(() => {
-                                    var userData = getUserData(chatId)
-                                    var username = userData.username;
-                                    addGroupMember(username, chatId, newGroupId);
-                                })
-                                resolve()
-                            })
-                    })
-            }).catch(err => {
-                reject(err)
-            })
-        })
-        .catch(err => {
-            reject(err)
-        })
-    })
-
-
-}
-
-// check if user is in any group
 var inGroup = (chatId) => {
     return new Promise((resolve, reject) => {
         users.findOne({ chatId }).then((res) => {
@@ -175,47 +128,22 @@ var findGroup = (chatId) => {
     })
 }
 
-// var createNewToday = () => {
-//     groups.find().then((allGroupsArray) => {
-//         for (i = 0; i < allGroupsArray.length; i++) {
-//             groups
-//             .findByIdAndUpdate(
-//                 allGroupsArray[i]._id,
-//                 {
-//                     $push: {
-//                         data: {
-//                             date: today,
-//                             replies: []
-//                         }
-//                     }
-//                 },
-//                 { new: true }
-//             )
-//             .then((updatedGroup) => {
-//                 console.log(`updated group with new date ${updatedGroup}`);
-//             }).catch((err) => {
-//                 console.log(err);
-//             });
-//         }
-//     });
-// }
-
 var saveReply = (reply, chatId, user) => {
     return new Promise((resolve, reject) => {
         findGroup(chatId).then((groupId) => {
             groups.findById(groupId).then((res) => {
-                var filteredArray = res.data.filter((replyObject) => replyObject.date !== today);
-                if (filteredArray.length === res.data.length) {
+                const findTodayArray = res.data.filter((replyObject) => replyObject.date == today);
+                console.log(today, time())
+                const entry = {
+                    user,
+                    chatId,
+                    reply,
+                    time: time()
+                }
+                if (findTodayArray.length == 0) {
                     var todaysData = {
                         date: today,
-                        replies: [
-                            {
-                                user,
-                                chatId,
-                                reply,
-                                time: time()
-                            }
-                        ]
+                        replies: [entry]
                     }
                     res.data.push(todaysData);
                     groups.findByIdAndUpdate(
@@ -223,53 +151,28 @@ var saveReply = (reply, chatId, user) => {
                         { $set: { data: res.data } },
                         { new: true },
                     ).then(() => {
-                        var todaysReplies = `${user}: ${reply}`;
-                        resolve(todaysReplies);
+                        resolve(`${user}: ${reply}`);
                     })
                 }
                 else {
-                    var replyToPush = {
-                        user,
-                        chatId,
-                        reply,
-                        time: time()
+                    const newReplies = res.data.filter((replyObject) => replyObject.date !== today);
+                    var todaysReplies = findTodayArray[0].replies.filter((reply) => reply.chatId !== chatId)
+                    todaysReplies.push(entry)
+                    const todaysObject = {
+                        date: today,
+                        replies: todaysReplies
                     }
-                    var todaysData;
-                    var todaysObject;
-                    var newDataArray = [];
-                    for (i = 0; i < res.data.length; i++) {
-                        if (res.data[i].date == today) {
-                            todaysData = res.data[i];
-                            todaysData = todaysData.replies.filter((reply) => reply.chatId !== chatId);
-                            todaysData.push(replyToPush);
-                            todaysObject = {
-                                date: today,
-                                replies: todaysData
-                            }
-                        } else {
-                            newDataArray.push(res.data[i]);
-                        }
-                    }
-                    newDataArray.push(todaysObject);
+                    newReplies.push(todaysObject);
                     groups.findByIdAndUpdate(
                         groupId,
                         {
-                            $set: {
-                                data: newDataArray
-                            }
+                            $set: { data: newReplies }
                         },
                         { new: true },
-                    ).then((updatedGroups) => {
-                        var allData = updatedGroups.data;
-                        var todaysRepliesArray;
-                        var todaysReplies = [];
-                        for (i = 0; i < allData.length; i++) {
-                            if (allData[i].date == today) {
-                                todaysRepliesArray = allData[i].replies;
-                            }
-                        };
-                        for (i = 0; i < todaysRepliesArray.length; i++) {
-                            var toPush = `${todaysRepliesArray[i].user}: ${todaysRepliesArray[i].reply}`;
+                    ).then((updatedGroup) => {
+                        var todaysReplies = updatedGroup.data.filter((data) => data.date == today)[0]
+                        for (i = 0; i < todaysReplies.length; i++) {
+                            var toPush = `${todaysReplies[i].user}: ${todaysReplies[i].reply}`;
                             todaysReplies.push(toPush);
                         };
                         todaysReplies = todaysReplies.join('\n');
@@ -310,36 +213,36 @@ var todaysReplies = (groupId) => {
     })
 }
 
-var changeGroupId = (chatId) => {
-    return new Promise ((resolve, reject) => {
-        findGroup(chatId).then((oldGroupId) => {
-            var newGroupId = new ObjectID();
-            groups.findById(oldGroupId).then((groupObject) => {
-                var group = new groups({
-                    _id: newGroupId,
-                    members: groupObject.members,
-                    data: groupObject.data
-                });
-                group.save(() => {
-                    groups.deleteOne({ _id: new ObjectID(oldGroupId) }).then(() => {
-                        users.updateMany(
-                            { group: oldGroupId },
-                            {
-                                $set: {
-                                    group: newGroupId
-                                }
-                            },
-                        ).then(() => {
-                        });
-                    });
-                })
-                resolve(newGroupId);
-            });
-        }).catch(err => {
-            reject(err)
-        })
-    })
-}
+// var changeGroupId = (chatId) => {
+//     return new Promise((resolve, reject) => {
+//         findGroup(chatId).then((oldGroupId) => {
+//             var newGroupId = new ObjectID();
+//             groups.findById(oldGroupId).then((groupObject) => {
+//                 var group = new groups({
+//                     _id: newGroupId,
+//                     members: groupObject.members,
+//                     data: groupObject.data
+//                 });
+//                 group.save(() => {
+//                     groups.deleteOne({ _id: new ObjectID(oldGroupId) }).then(() => {
+//                         users.updateMany(
+//                             { group: oldGroupId },
+//                             {
+//                                 $set: {
+//                                     group: newGroupId
+//                                 }
+//                             },
+//                         ).then(() => {
+//                         });
+//                     });
+//                 })
+//                 resolve(newGroupId);
+//             });
+//         }).catch(err => {
+//             reject(err)
+//         })
+//     })
+// }
 
 var fetchChatIds = () => {
     return new Promise((resolve, reject) => {
@@ -366,8 +269,8 @@ module.exports = {
     findGroup,
     retrieveGroupData,
     todaysReplies,
-    changeUserGroup,
-    changeGroupId,
+    // changeUserGroup,
+    // changeGroupId,
     fetchChatIds,
     // createNewToday,
     getUserData

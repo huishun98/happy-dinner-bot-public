@@ -99,18 +99,18 @@ var botResponse = (msg, bot) => {
                                     console.log(err)
                                 })
                                 break;
-                            case '/changegroup':
-                                controller.changeUserGroup(chatId, param).then( (err) => {
-                                    bot.sendMessage(chatId, customReplies.changedGrp, { parse_mode: "HTML" });
-                                }).catch(err => {
-                                    bot.sendMessage(chatId, err, { parse_mode: "HTML" });
-                                })
-                                break;
-                            case '/changeid':
-                                controller.changeGroupId(chatId).then((newGroupId) => {
-                                    bot.sendMessage(chatId, customReplies.newGrpId(newGroupId), { parse_mode: "HTML" });
-                                }).catch(err => {console.log(err)})
-                                break;
+                            // case '/changegroup':
+                            //     controller.changeUserGroup(chatId, param).then( (err) => {
+                            //         bot.sendMessage(chatId, customReplies.changedGrp, { parse_mode: "HTML" });
+                            //     }).catch(err => {
+                            //         bot.sendMessage(chatId, err, { parse_mode: "HTML" });
+                            //     })
+                            //     break;
+                            // case '/changeid':
+                            //     controller.changeGroupId(chatId).then((newGroupId) => {
+                            //         bot.sendMessage(chatId, customReplies.newGrpId(newGroupId), { parse_mode: "HTML" });
+                            //     }).catch(err => {console.log(err)})
+                            //     break;
                             default:
                                 bot.sendMessage(chatId, customReplies.promptCmd, { parse_mode: "HTML" });
                         }
