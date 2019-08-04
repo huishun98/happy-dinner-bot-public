@@ -132,8 +132,8 @@ var saveReply = (reply, chatId, user) => {
     return new Promise((resolve, reject) => {
         findGroup(chatId).then((groupId) => {
             groups.findById(groupId).then((res) => {
-                const findTodayArray = res.data.filter((replyObject) => replyObject.date == date);
-                console.log(date, time())
+                const findTodayArray = res.data.filter((replyObject) => replyObject.date == date());
+                console.log(date(), time())
                 const entry = {
                     user,
                     chatId,
@@ -142,7 +142,7 @@ var saveReply = (reply, chatId, user) => {
                 }
                 if (findTodayArray.length == 0) {
                     var todaysData = {
-                        date,
+                        date: date(),
                         replies: [entry]
                     }
                     res.data.push(todaysData);
@@ -155,11 +155,11 @@ var saveReply = (reply, chatId, user) => {
                     })
                 }
                 else {
-                    const newReplies = res.data.filter((replyObject) => replyObject.date !== date);
+                    const newReplies = res.data.filter((replyObject) => replyObject.date !== date());
                     var todaysReplies = findTodayArray[0].replies.filter((reply) => reply.chatId !== chatId)
                     todaysReplies.push(entry)
                     const todaysObject = {
-                        date: date,
+                        date: date(),
                         replies: todaysReplies
                     }
                     newReplies.push(todaysObject);
@@ -170,7 +170,7 @@ var saveReply = (reply, chatId, user) => {
                         },
                         { new: true },
                     ).then((updatedGroup) => {
-                        var todaysReplies = updatedGroup.data.filter((data) => data.date == date)[0]
+                        var todaysReplies = updatedGroup.data.filter((data) => data.date == date())[0]
                         for (i = 0; i < todaysReplies.length; i++) {
                             var toPush = `${todaysReplies[i].user}: ${todaysReplies[i].reply}`;
                             todaysReplies.push(toPush);
@@ -204,7 +204,7 @@ var todaysReplies = (groupId) => {
             //loop through the array to find object with date set to today, return that object for now.
             for (i = 0; i < dataArray.length; i++) {
                 var object = dataArray[i];
-                if (object.date == date) {
+                if (object.date == date()) {
                     todaysReplies = object.replies;
                 }
             }
