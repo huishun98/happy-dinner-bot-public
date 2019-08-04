@@ -10,6 +10,7 @@ var app = express();
 const router = express.Router();
 
 app.engine('.hbs', hbs({extname: '.hbs', layoutsDir:__dirname + '/views'}))
+app.set('views', __dirname + '/views')
 app.set('view engine', '.hbs')
 
 router.get('/',function(req,res){
