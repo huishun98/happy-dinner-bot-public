@@ -1,18 +1,27 @@
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
+var path = require('path');
 
 const config = require('./config')
 const runBot = require("./telegram/bot")
 
 var app = express();
+const router = express.Router();
 
-const port = process.env.PORT || 3000;
+router.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/client/index.html'));
+    //__dirname : It will resolve to your project folder.
+});
+
+//add the router
+app.use('/', router);
 
 app.get("/", (req, res) => {
-    res.send("App is running.")
+    res.sendFile('index.html');
 })
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Our app is running on port ${port}.`);
 })

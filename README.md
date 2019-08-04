@@ -12,9 +12,9 @@ Happy Dinner Bot will ask you if you are going home for dinner every day at 9am,
 You can check who’s going home for dinner anywhere, anytime.
 
 ## Commands
-- /responses - check who is having dinner tonight
+- /responses - check all respones
 - /group - check group ID
-- /help - list other commands
+- /help - list all commands
 - /create - create a group
-- /join - join a group (e.g. /join 1234)
+- /join - join a group
 - /quit - quit group
