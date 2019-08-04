@@ -169,7 +169,8 @@ var saveReply = (reply, chatId, user) => {
                         },
                         { new: true },
                     ).then((updatedGroup) => {
-                        var todaysReplies = updatedGroup.data.filter((data) => data.date == date())[0]
+                        var todaysReplies = updatedGroup.data.filter((data) => data.date == date())[0].replies
+                        console.log(todaysReplies)
                         var response = []
                         for (i = 0; i < todaysReplies.length; i++) {
                             response.push(`${todaysReplies[i].user}: ${todaysReplies[i].reply}`);
