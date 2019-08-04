@@ -45,7 +45,6 @@ var botResponse = (msg, bot) => {
                     if (inGroup && message.substring(0, 1) == '/') {
                         // in group and a command
                         var command = getCommand(message)
-                        var param = getParam(message)
 
                         switch (command) {
                             case '/start':
@@ -140,8 +139,6 @@ var botResponse = (msg, bot) => {
                         // not in group and a command
 
                         var command = getCommand(message)
-                        var param = getParam(message)
-
                         switch (command) {
                             case '/help':
                                 bot.sendMessage(chatId, customReplies.help, { parse_mode: "HTML" });
@@ -163,17 +160,22 @@ var botResponse = (msg, bot) => {
                                     })
                                 break;
                             case '/join':
-                                controller.groupExists(param)
-                                    .then(() => {
-                                        bot.sendMessage(chatId, customReplies.success + customReplies.question, { parse_mode: "HTML" });
-                                        controller.addUserGroup(user, chatId, param);
-                                        controller.addGroupMember(user, chatId, param);
-                                    }).catch(err => {
-                                        bot.sendMessage(chatId, customReplies.invalidGrpId, { parse_mode: "HTML" });
-                                        if (err !== "invalid group Id") {
-                                            console.log(err)
-                                        }
-                                    })
+                                bot.sendMessage(chatId, customReplies.join).then((sended) => {
+                                    bot.onReplyToMessage(sended.chat.id, sended.message_id, (message) => {
+                                        var groupId = message.text
+                                        controller.groupExists(groupId)
+                                            .then(() => {
+                                                bot.sendMessage(chatId, customReplies.success + customReplies.question, { parse_mode: "HTML" });
+                                                controller.addUserGroup(user, chatId, groupId);
+                                                controller.addGroupMember(user, chatId, groupId);
+                                            }).catch(err => {
+                                                bot.sendMessage(chatId, customReplies.invalidGrpId, { parse_mode: "HTML" });
+                                                if (err !== "Invalid Group Id") {
+                                                    console.log(err)
+                                                }
+                                            })
+                                    });
+                                })
                                 break;
                             case '/responses':
                             case '/group':
@@ -199,13 +201,6 @@ var getCommand = (message) => {
         return message.substr(0, message.indexOf(' '));
     } else {
         return message;
-    }
-}
-var getParam = (message) => {
-    if (message.indexOf(' ') !== -1) {
-        return message.substr(message.indexOf(' ') + 1);
-    } else {
-        return undefined;
     }
 }
 

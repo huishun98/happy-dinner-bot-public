@@ -11,6 +11,7 @@ const promptGrp = `Please create a group or join a group!`
 const promptCmd = `Please enter a valid command.`
 const changedGrp = `Your group has been changed.`
 const quit = "You have quitted your dinner group"
+const join = "Please manually reply to this message with the group's ID."
 
 module.exports = {
     startMessage,
@@ -25,5 +26,6 @@ module.exports = {
     promptGrp,
     promptCmd,
     changedGrp,
-    quit
+    quit,
+    join
 }
