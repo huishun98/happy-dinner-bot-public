@@ -39,6 +39,21 @@ var startReminderCron = (bot) => {
     }, null, true, 'Asia/Singapore');
 }
 
+const replyPrompt = {
+    parse_mode: "HTML",
+    reply_markup: {
+        inline_keyboard: [[
+            {
+                text: 'Yes',
+                callback_data: 'yes'
+            }, {
+                text: 'No',
+                callback_data: 'no'
+            }
+        ]]
+    }
+}
+
 var botResponse = (msg, bot) => {
     //variables
     var user = msg.from.first_name;
@@ -61,20 +76,7 @@ var botResponse = (msg, bot) => {
         .then(([controller, user, message, chatId]) => {
             controller.inGroup(chatId)
                 .then((inGroup) => {
-                    const replyPrompt = {
-                        parse_mode: "HTML",
-                        reply_markup: {
-                            inline_keyboard: [[
-                                {
-                                    text: 'Yes',
-                                    callback_data: 'yes'
-                                }, {
-                                    text: 'No',
-                                    callback_data: 'no'
-                                }
-                            ]]
-                        }
-                    }
+
 
                     if (inGroup && message.substring(0, 1) == '/') {
                         // in group and a command
@@ -213,7 +215,7 @@ var replyReceived = (message, chatId, bot) => {
             })
             break;
         default:
-            bot.sendMessage(chatId, options.standardReply, { parse_mode: "HTML" });
+            bot.sendMessage(chatId, options.standardReply, replyPrompt);
     }
 }
 
