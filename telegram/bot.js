@@ -6,6 +6,21 @@ const getRandomInt = require('../database/random-int')
 const CronJob = require('cron').CronJob;
 const date = require('../database/date')
 
+const replyPrompt = {
+    parse_mode: "HTML",
+    reply_markup: {
+        inline_keyboard: [[
+            {
+                text: 'Yes',
+                callback_data: 'yes'
+            }, {
+                text: 'No',
+                callback_data: 'no'
+            }
+        ]]
+    }
+}
+
 // everyday at 9am, question will be asked
 var startDefaultCron = (bot) => {
     new CronJob('0 0 9 * * *', function () {
@@ -37,7 +52,7 @@ var startReminderCron = (bot) => {
                     var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
                     if (findChatId.length == 0) {
-                        console.log(groupMembers[j], findChatId)
+                        sendResponses(bot, memberChatId, replyPrompt)
                     }
                 }
             }
@@ -45,21 +60,6 @@ var startReminderCron = (bot) => {
             console.log(err)
         });
     }, null, true, 'Asia/Singapore');
-}
-
-const replyPrompt = {
-    parse_mode: "HTML",
-    reply_markup: {
-        inline_keyboard: [[
-            {
-                text: 'Yes',
-                callback_data: 'yes'
-            }, {
-                text: 'No',
-                callback_data: 'no'
-            }
-        ]]
-    }
 }
 
 var botResponse = (msg, bot) => {
@@ -129,7 +129,7 @@ var botResponse = (msg, bot) => {
                                 }).catch(err => { console.log(err) })
                                 break;
                             case '/responses':
-                                sendResponses(bot, chatId);
+                                sendResponses(bot, chatId, { parse_mode: "HTML" });
                                 break;
                             case '/quit':
                                 controller.quitGroup(chatId);
@@ -171,7 +171,7 @@ var botResponse = (msg, bot) => {
                                         var groupId = message.text
                                         controller.groupExists(groupId)
                                             .then(() => {
-                                                sendResponses(bot, chatId);
+                                                sendResponses(bot, chatId, { parse_mode: "HTML" });
                                                 controller.addUserGroup(user, chatId, groupId);
                                                 controller.addGroupMember(user, chatId, groupId);
                                             }).catch(err => {
@@ -235,7 +235,7 @@ var getCommand = (message) => {
     }
 }
 
-var sendResponses = (bot, chatId) => {
+var sendResponses = (bot, chatId, options) => {
     controller.findGroup(chatId).then((groupId) => {
         controller.todaysReplies(groupId).then((repliesArray) => {
             var botResponse = [];
@@ -244,9 +244,9 @@ var sendResponses = (bot, chatId) => {
             }
             if (botResponse.length !== 0) {
                 botResponse = botResponse.join('\n');
-                bot.sendMessage(chatId, options.question + `\n${botResponse}`, { parse_mode: "HTML" });
+                bot.sendMessage(chatId, options.question + `\n${botResponse}`, options);
             } else {
-                bot.sendMessage(chatId, options.noReplies, { parse_mode: "HTML" });
+                bot.sendMessage(chatId, options.noReplies, options);
             }
         }).catch(err => {
             console.log(err)
