@@ -27,7 +27,7 @@ var startReminderCron = (bot) => {
                 var groupMembers = group.members
                 var todaysReplies = group.data.filter((data) => data.date = date.date())[0].replies
                 for (var j = 0; j < groupMembers.length; j++) {
-                    var memberChatId = groupMembers[i].chatId
+                    var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
                     if (findChatId.length == 0) {
                         sendResponses(bot, memberChatId)
