@@ -52,7 +52,7 @@ var startReminderCron = (bot) => {
                     var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
                     if (findChatId.length == 0) {
-                        // sendResponses(bot, memberChatId, replyPrompt)
+                        sendResponses(bot, memberChatId, replyPrompt)
                     }
                 }
             }
@@ -84,8 +84,6 @@ var botResponse = (msg, bot) => {
         .then(([controller, user, message, chatId]) => {
             controller.inGroup(chatId)
                 .then((inGroup) => {
-
-
                     if (inGroup && message.substring(0, 1) == '/') {
                         // in group and a command
                         var command = getCommand(message)

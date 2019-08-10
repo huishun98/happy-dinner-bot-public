@@ -39,7 +39,6 @@ bot.on('message', (msg) => {
     runBot.botResponse(msg, bot)
 });
 bot.on('callback_query', (callbackQuery) => {
-    console.log(callbackQuery, callbackQuery.data, callbackQuery.message)
     runBot.replyReceived(
         callbackQuery.data,
         callbackQuery.message.chat.id,
