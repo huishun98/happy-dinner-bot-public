@@ -25,6 +25,7 @@ var startReminderCron = (bot) => {
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i]
                 var groupMembers = group.members
+                console.log(groupMembers, group.data.filter((data) => data.date = date.date()))
                 var todaysReplies = group.data.filter((data) => data.date = date.date())[0].replies
                 for (var j = 0; j < groupMembers.length; j++) {
                     var memberChatId = groupMembers[j].chatId
