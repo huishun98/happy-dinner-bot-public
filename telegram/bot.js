@@ -4,6 +4,7 @@ const options = require("../common/options")
 const getGif = require("../gifs/giphy")
 const getRandomInt = require('../database/random-int')
 const CronJob = require('cron').CronJob;
+const date = require('../database/date')
 
 // everyday at 9am, question will be asked
 var startDefaultCron = (bot) => {
@@ -24,7 +25,7 @@ var startReminderCron = (bot) => {
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i]
                 var groupMembers = group.members
-                var todaysReplies = group.data.filter((data) => data.date = date())[0].replies
+                var todaysReplies = group.data.filter((data) => data.date = date.date())[0].replies
                 for (var j = 0; j < groupMembers.length; j++) {
                     var memberChatId = groupMembers[i].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
