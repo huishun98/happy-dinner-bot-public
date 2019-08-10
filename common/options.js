@@ -1,5 +1,5 @@
 const limit = 5
-const query = ["animal", "disney"]
+const query = ["animal", "disney", "marvel", "avengers"]
 const startMessage = `<b>Welcome to Happy Dinner Bot!</b>\nTo start, you might want to create a new group (enter '/create')\nor join an existing group (enter '/join').\nFor the full list of commands, enter '/help'.`
 const question = '<b>Dinner tonight?</b>';
 const standardReply = question + '\n**Please reply with either Yes or No';

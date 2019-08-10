@@ -52,7 +52,7 @@ var startReminderCron = (bot) => {
                     var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
                     if (findChatId.length == 0) {
-                        sendResponses(bot, memberChatId, replyPrompt)
+                        bot.sendMessage(memberChatId, options.question, replyPrompt)
                     }
                 }
             }
@@ -233,7 +233,7 @@ var getCommand = (message) => {
     }
 }
 
-var sendResponses = (bot, chatId, botOptions) => {
+var sendResponses = (bot, chatId, sendOptions) => {
     controller.findGroup(chatId).then((groupId) => {
         controller.todaysReplies(groupId).then((repliesArray) => {
             var botResponse = [];
@@ -242,9 +242,9 @@ var sendResponses = (bot, chatId, botOptions) => {
             }
             if (botResponse.length !== 0) {
                 botResponse = botResponse.join('\n');
-                bot.sendMessage(chatId, options.question + `\n${botResponse}`, botOptions);
+                bot.sendMessage(chatId, options.question + `\n${botResponse}`, sendOptions);
             } else {
-                bot.sendMessage(chatId, options.noReplies, botOptions);
+                bot.sendMessage(chatId, options.noReplies, sendOptions);
             }
         }).catch(err => {
             console.log(err)
