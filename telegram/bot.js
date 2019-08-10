@@ -6,7 +6,7 @@ const getRandomInt = require('../database/random-int')
 const CronJob = require('cron').CronJob;
 
 // everyday at 9am, question will be asked
-var startCronJob = (bot) => {
+var startDefaultCron = (bot) => {
     new CronJob('0 0 9 * * *', function () {
         controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
             for (i = 0; i < arrayOfChatIds.length; i++) {
@@ -16,7 +16,9 @@ var startCronJob = (bot) => {
             console.log(err)
         });
     }, null, true, 'Asia/Singapore');
+}
 
+var startReminderCron = (bot) => {
     new CronJob('* * 12,2,4 * * *', function () {
         controller.retrieveAllGroups().then((groups) => {
             for (var i = 0; i < groups.length; i++) {
@@ -59,13 +61,28 @@ var botResponse = (msg, bot) => {
         .then(([controller, user, message, chatId]) => {
             controller.inGroup(chatId)
                 .then((inGroup) => {
+                    const replyPrompt = {
+                        parse_mode: "HTML",
+                        reply_markup: {
+                            inline_keyboard: [[
+                                {
+                                    text: 'Yes',
+                                    callback_data: 'yes'
+                                }, {
+                                    text: 'No',
+                                    callback_data: 'no'
+                                }
+                            ]]
+                        }
+                    }
+
                     if (inGroup && message.substring(0, 1) == '/') {
                         // in group and a command
                         var command = getCommand(message)
 
                         switch (command) {
                             case '/start':
-                                bot.sendMessage(chatId, options.success + options.question, { parse_mode: "HTML" });
+                                bot.sendMessage(chatId, options.success + options.question, replyPrompt);
                                 break;
                             case '/help':
                                 bot.sendMessage(chatId, options.help, { parse_mode: "HTML" });
@@ -98,8 +115,8 @@ var botResponse = (msg, bot) => {
                                         }
                                         arrayOfMembers = arrayOfMembers.join('\n')
                                         bot.sendMessage(chatId, `Group members:\n${arrayOfMembers}`, { parse_mode: "HTML" });
-                                    }).catch(err => {console.log(err)})
-                                }).catch(err => {console.log(err)})
+                                    }).catch(err => { console.log(err) })
+                                }).catch(err => { console.log(err) })
                                 break;
                             case '/responses':
                                 sendResponses(bot, chatId);
@@ -114,31 +131,9 @@ var botResponse = (msg, bot) => {
                     }
                     else if (inGroup && !(message.substring(0, 1) == '/')) {
                         //in group and a message
-                        switch (message) {
-                            case 'yes':
-                            case 'no':
-                                getGif().then(([res, limit]) => {
-                                    var obj = JSON.parse(res)
-                                    if (obj.data.length !== 0) {
-                                        var index = getRandomInt(0, limit - 1)
-                                        var link = obj.data[index].images.original.url
-                                        bot.sendDocument(chatId, link);
-                                    }
-                                    controller.saveReply(message, chatId, user).then((res) => {
-                                        bot.sendMessage(chatId, options.question + '\n' + res, { parse_mode: "HTML" })
-                                    }).catch(err => {
-                                        console.log(err)
-                                    });
-                                }).catch(err => {
-                                    console.log(err)
-                                })
-                                break;
-                            default:
-                                bot.sendMessage(chatId, options.standardReply, { parse_mode: "HTML" });
-                        }
+                        replyReceived(message, chatId, bot)
                     } else if (!(inGroup) && message.substring(0, 1) == '/') {
                         // not in group and a command
-
                         var command = getCommand(message)
                         switch (command) {
                             case '/help':
@@ -197,6 +192,31 @@ var botResponse = (msg, bot) => {
         })
 }
 
+var replyReceived = (message, chatId, bot) => {
+    switch (message) {
+        case 'yes':
+        case 'no':
+            getGif().then(([res, limit]) => {
+                var obj = JSON.parse(res)
+                if (obj.data.length !== 0) {
+                    var index = getRandomInt(0, limit - 1)
+                    var link = obj.data[index].images.original.url
+                    bot.sendDocument(chatId, link);
+                }
+                controller.saveReply(message, chatId, user).then((res) => {
+                    bot.sendMessage(chatId, options.question + '\n' + res, { parse_mode: "HTML" })
+                }).catch(err => {
+                    console.log(err)
+                });
+            }).catch(err => {
+                console.log(err)
+            })
+            break;
+        default:
+            bot.sendMessage(chatId, options.standardReply, { parse_mode: "HTML" });
+    }
+}
+
 var getCommand = (message) => {
     if (message.indexOf(' ') !== -1) {
         return message.substr(0, message.indexOf(' '));
@@ -226,4 +246,4 @@ var sendResponses = (bot, chatId) => {
     })
 }
 
-module.exports = { botResponse, startCronJob }
+module.exports = { botResponse, startDefaultCron, startReminderCron, replyReceived }

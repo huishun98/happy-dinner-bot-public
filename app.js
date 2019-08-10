@@ -33,10 +33,14 @@ app.listen(port, () => {
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(config.token, { polling: true });
-runBot.startCronJob(bot)
+runBot.startDefaultCron(bot)
+runBot.startReminderCron(bot)
 bot.on('message', (msg) => {
     runBot.botResponse(msg, bot)
 });
+bot.on('callback_query', (callbackQuery) => {
+    runBot.replyReceived(callbackQuery.data, callbackQuery.message.chat.id, bot)
+})
 
 
 //keep heroku awake
