@@ -35,7 +35,7 @@ var startReminderCron = (bot) => {
                     var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
                     if (findChatId.length == 0) {
-                        // sendResponses(bot, memberChatId)
+                        console.log(groupMembers[j], findChatId)
                     }
                 }
             }
