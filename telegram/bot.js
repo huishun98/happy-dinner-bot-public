@@ -35,7 +35,7 @@ var startDefaultCron = (bot) => {
 }
 
 var startReminderCron = (bot) => {
-    new CronJob('0 0 12,1,2,3,4 * * *', function () {
+    new CronJob('0 0 12-16 * * *', function () {
         controller.retrieveAllGroups().then((groups) => {
             for (var i = 0; i < groups.length; i++) {
                 var group = groups[i]
