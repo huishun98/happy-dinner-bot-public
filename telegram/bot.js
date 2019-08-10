@@ -47,7 +47,7 @@ var startReminderCron = (bot) => {
                 if (todaysReplies.length !== 0) {
                     todaysReplies = todaysReplies[0].replies
                 }
-                
+
                 for (var j = 0; j < groupMembers.length; j++) {
                     var memberChatId = groupMembers[j].chatId
                     var findChatId = todaysReplies.filter(reply => reply.chatId == memberChatId)
@@ -141,7 +141,7 @@ var botResponse = (msg, bot) => {
                     }
                     else if (inGroup && !(message.substring(0, 1) == '/')) {
                         //in group and a message
-                        replyReceived(message, chatId, bot)
+                        replyReceived(message, chatId, user, bot)
                     } else if (!(inGroup) && message.substring(0, 1) == '/') {
                         // not in group and a command
                         var command = getCommand(message)
@@ -202,7 +202,7 @@ var botResponse = (msg, bot) => {
         })
 }
 
-var replyReceived = (message, chatId, bot) => {
+var replyReceived = (message, chatId, user, bot) => {
     switch (message) {
         case 'yes':
         case 'no':

@@ -39,7 +39,11 @@ bot.on('message', (msg) => {
     runBot.botResponse(msg, bot)
 });
 bot.on('callback_query', (callbackQuery) => {
-    runBot.replyReceived(callbackQuery.data, callbackQuery.message.chat.id, bot)
+    runBot.replyReceived(
+        callbackQuery.data,
+        callbackQuery.message.chat.id,
+        callbackQuery.message.from.first_name,
+        bot)
 })
 
 
