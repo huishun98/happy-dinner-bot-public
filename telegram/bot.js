@@ -233,7 +233,7 @@ var getCommand = (message) => {
     }
 }
 
-var sendResponses = (bot, chatId, options) => {
+var sendResponses = (bot, chatId, botOptions) => {
     controller.findGroup(chatId).then((groupId) => {
         controller.todaysReplies(groupId).then((repliesArray) => {
             var botResponse = [];
@@ -242,9 +242,9 @@ var sendResponses = (bot, chatId, options) => {
             }
             if (botResponse.length !== 0) {
                 botResponse = botResponse.join('\n');
-                bot.sendMessage(chatId, options.question + `\n${botResponse}`, options);
+                bot.sendMessage(chatId, options.question + `\n${botResponse}`, botOptions);
             } else {
-                bot.sendMessage(chatId, options.noReplies, options);
+                bot.sendMessage(chatId, options.noReplies, botOptions);
             }
         }).catch(err => {
             console.log(err)
