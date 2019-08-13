@@ -26,7 +26,7 @@ var startDefaultCron = (bot) => {
     new CronJob('0 0 9 * * *', function () {
         controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
             for (i = 0; i < arrayOfChatIds.length; i++) {
-                bot.sendMessage(arrayOfChatIds[i], options.question, { parse_mode: "HTML" })
+                bot.sendMessage(arrayOfChatIds[i], options.question, replyPrompt)
             }
         }).catch(err => {
             console.log(err)
