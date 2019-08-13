@@ -243,18 +243,18 @@ var quitGroup = (chatId) => {
     });
 }
 
-var fetchChatIdsOfThoseInGroups = () => {
-    return new Promise((resolve, reject) => {
-        users.find().then((allUsers) => {
-            var usersInGroups = allUsers.filter((user) => user.group !== null)
-            var chatIdArray = [];
-            for (i = 0; i < usersInGroups.length; i++) {
-                chatIdArray.push(usersInGroups[i].chatId);
-            }
-            resolve(chatIdArray);
-        })
-    })
-}
+// var fetchChatIdsOfThoseInGroups = () => {
+//     return new Promise((resolve, reject) => {
+//         users.find().then((allUsers) => {
+//             var usersInGroups = allUsers.filter((user) => user.group !== null)
+//             var chatIdArray = [];
+//             for (i = 0; i < usersInGroups.length; i++) {
+//                 chatIdArray.push(usersInGroups[i].chatId);
+//             }
+//             resolve(chatIdArray);
+//         })
+//     })
+// }
 
 module.exports = {
     addGroup,
@@ -267,7 +267,7 @@ module.exports = {
     findGroup,
     retrieveGroupData,
     todaysReplies,
-    fetchChatIdsOfThoseInGroups,
+    // fetchChatIdsOfThoseInGroups,
     getUserData,
     quitGroup,
     retrieveAllGroups
