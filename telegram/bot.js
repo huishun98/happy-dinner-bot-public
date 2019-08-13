@@ -254,4 +254,4 @@ var sendResponses = (bot, chatId, sendOptions) => {
     })
 }
 
-module.exports = { botResponse, startDefaultCron, startReminderCron, replyReceived }
+module.exports = { botResponse, startReminderCron, replyReceived }
