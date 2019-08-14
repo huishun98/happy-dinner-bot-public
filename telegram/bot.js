@@ -21,19 +21,6 @@ const replyPrompt = {
     }
 }
 
-// everyday at 9am, question will be asked
-// var startDefaultCron = (bot) => {
-//     new CronJob('0 0 9 * * *', function () {
-//         controller.fetchChatIdsOfThoseInGroups().then((arrayOfChatIds) => {
-//             for (i = 0; i < arrayOfChatIds.length; i++) {
-//                 bot.sendMessage(arrayOfChatIds[i], options.question, replyPrompt)
-//             }
-//         }).catch(err => {
-//             console.log(err)
-//         });
-//     }, null, true, 'Asia/Singapore');
-// }
-
 var startReminderCron = (bot) => {
     new CronJob('0 0 9,12-16 * * *', function () {
         controller.retrieveAllGroups().then((groups) => {
