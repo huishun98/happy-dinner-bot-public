@@ -1,4 +1,4 @@
-# happy-dinner-bot
+# Happy Dinner Bot
 
 ## Description
 Happy Dinner Bot is a Telegram bot. (Example: *@happydinnerbot*)
