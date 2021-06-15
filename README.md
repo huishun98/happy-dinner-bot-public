@@ -1,6 +1,7 @@
 # Happy Dinner Bot
 
-## Description
+![Web view](https://github.com/huishun98/happy-dinner-bot-public/blob/master/assets/screenshot.png)
+
 Happy Dinner Bot is a Telegram bot. (Example: *@happydinnerbot*)
 
 Happy Dinner Bot helps you collate the group members having dinner together tonight.
